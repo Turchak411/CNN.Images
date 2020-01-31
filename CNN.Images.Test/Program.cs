@@ -13,7 +13,7 @@ namespace CNN.Images.Test
             NetworkStructure netStructure = new NetworkStructure
             {
                 InputVectorLength = 81,
-                NeuronsByLayers = new[] { 75, 50, 1 }
+                NeuronsByLayers = new[] { 75, 75, 75, 50, 1 }
             };
 
             evaNetwork.CreateNetwork(netStructure, 2, "testDatasets.txt");
@@ -22,14 +22,14 @@ namespace CNN.Images.Test
             TrainConfiguration trainConfig = new TrainConfiguration
             {
                 StartIteration = 0,
-                EndIteration = 10000,
+                EndIteration = 100,
                 InputDatasetFilename = "inputSets.txt",
                 OutputDatasetFilename = "outputSets.txt",
                 SourceFolderName = "images",
                 MemoryFolder = ""
             };
 
-            evaNetwork.Train(trainConfig, 10000);
+            evaNetwork.Train(trainConfig, 100);
 
             double[] sssss = evaNetwork.Handle("testImages//img.png");
 
