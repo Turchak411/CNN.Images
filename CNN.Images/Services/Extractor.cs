@@ -1,9 +1,7 @@
 ﻿using CNN.Images.Core.Layers;
 using CNN.Images.Model;
 using CNN.Images.Model.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CNN.Images.Services
 {
@@ -13,7 +11,7 @@ namespace CNN.Images.Services
 
         private Extractor() { }
 
-        public Extractor(string layersScheme, List<List<Filter>> convLayersFilters, string filtersFilename)
+        public Extractor(string layersScheme, List<List<FilterName>> convLayersFilters, string filtersFilename)
         {
             m_layers = new List<IExtractLayer>();
 
@@ -27,14 +25,13 @@ namespace CNN.Images.Services
                         break;
                     case 'p':
                     default:
-                        CreatePoolLayer(5, 5);      // default: matrix 3x3 //
-                        // Для cpcp: при 3х3 выходной вектор получается с длиной - 225, с 2х2 - 1521, но он более вариативен
+                        CreatePoolLayer(5, 5); // default: matrix 3x3 //
                         break;
                 }
             }
         }
 
-        private void CreateConvLayer(List<Filter> filtersToImport, string filtersFilename)
+        private void CreateConvLayer(List<FilterName> filtersToImport, string filtersFilename)
         {
             m_layers.Add(new ConvolutionLayer(filtersToImport, filtersFilename));
         }
@@ -104,7 +101,6 @@ namespace CNN.Images.Services
                     }
                 }
             }
-
 
             return vector;
         }
