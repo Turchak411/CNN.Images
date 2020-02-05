@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
@@ -7,8 +8,6 @@ namespace CNN.Images.Services
 {
     public class ImageLoader
     {
-        // TODO: Здесь приводить каждый пиксель в промежуток от 0.000 до 1.000
-
         // Image data:
         private int m_imgDimentionX;
         private int m_imgDimentionY;
@@ -25,7 +24,7 @@ namespace CNN.Images.Services
             m_imgDimentionY = dimentionY;
         }
 
-        public double[,] LoadImageData(string imgPath)
+        public double[,] LoadImageDataBW(string imgPath)
         {
             // Загрузка и стандартизация изображения:
             Bitmap img = LoadImage(imgPath);
@@ -40,6 +39,20 @@ namespace CNN.Images.Services
 
             // Отцифровка изображения:
             return ConvertToMatrix(img);
+        }
+
+        public List<double[,]> LoadImageDataRGB(string imgPath)
+        {
+            // Загрузка и стандартизация изображения:
+            Bitmap img = LoadImage(imgPath);
+
+            // Приведение изображения к заданынм размерам:
+            img = Compress(img);
+
+            img.Save("test.png");
+
+            // Отцифровка изображения:
+            return ConvertToMatrixList(img);
         }
 
         private Bitmap LoadImage(string path)
@@ -106,14 +119,40 @@ namespace CNN.Images.Services
                 for (int k = 0; k < m_imgDimentionX; k++)
                 {
                     int absColorValue = img.GetPixel(k, i).ToArgb();
-                    imgData[i, k] += DiscreteRationing(absColorValue);
+                    imgData[i, k] += RationingBWPixel(absColorValue);
                 }
             }
 
             return imgData;
         }
 
-        private double DiscreteRationing(int absValue)
+        private List<double[,]> ConvertToMatrixList(Bitmap img)
+        {
+            List<double[,]> imgDataList = new List<double[,]>();
+
+            double[,] imgDataRed = new double[m_imgDimentionY, m_imgDimentionX];
+            double[,] imgDataGreen = new double[m_imgDimentionY, m_imgDimentionX];
+            double[,] imgDataBlue = new double[m_imgDimentionY, m_imgDimentionX];
+
+            for (int i = 0; i < m_imgDimentionY; i++)
+            {
+                for (int k = 0; k < m_imgDimentionX; k++)
+                {
+                    Color absColorValue = img.GetPixel(k, i);
+                    imgDataRed[i, k] += (double)absColorValue.R;
+                    imgDataGreen[i, k] += (double)absColorValue.G;
+                    imgDataBlue[i, k] += (double)absColorValue.B;
+                }
+            }
+
+            imgDataList.Add(imgDataRed);
+            imgDataList.Add(imgDataGreen);
+            imgDataList.Add(imgDataBlue);
+
+            return imgDataList;
+        }
+
+        private double RationingBWPixel(int absValue)
         {
             double maxValue = 16777216;
 

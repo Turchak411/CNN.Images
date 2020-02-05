@@ -22,14 +22,14 @@ namespace CNN.Images.Test
             TrainConfiguration trainConfig = new TrainConfiguration
             {
                 StartIteration = 0,
-                EndIteration = 100,
+                EndIteration = 10000,
                 InputDatasetFilename = "inputSets.txt",
                 OutputDatasetFilename = "outputSets.txt",
                 SourceFolderName = "images",
                 MemoryFolder = ""
             };
 
-            evaNetwork.Train(trainConfig, 100);
+            evaNetwork.Train(trainConfig, 10000);
 
             double[] sssss = evaNetwork.Handle("testImages//img.png");
 

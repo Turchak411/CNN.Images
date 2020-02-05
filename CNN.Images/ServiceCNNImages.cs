@@ -17,9 +17,7 @@ namespace CNN.Images
         {
             _fileManager = new FileManager(networkStructure);
 
-            // TODO: Перенести схемы экстракт слоев в отдельный объект, а пока
-            string filtersFilename = "filters.txt";
-            Extractor extractor = new Extractor("cpcp", CreateConvFiltersScheme(), filtersFilename);
+            Extractor extractor = new Extractor("cpcp", CreateConvFiltersScheme());
 
             _networkTeacher = new NetworksTeacher(extractor, networkStructure, netsCountInAssembly, _fileManager);
 
@@ -30,22 +28,21 @@ namespace CNN.Images
             //}
         }
 
-        // TODO: Потом перенести куда-нибудь, но не сюда
-        private static List<List<Filter>> CreateConvFiltersScheme()
+        private static List<List<FilterName>> CreateConvFiltersScheme()
         {
-            List<List<Filter>> convFilters = new List<List<Filter>>();
+            List<List<FilterName>> convFilters = new List<List<FilterName>>();
 
             // Conv 0:
-            List<Filter> filtersConv0 = new List<Filter>();
-            filtersConv0.Add(Filter.Blur);
-            filtersConv0.Add(Filter.Clarity);
-            filtersConv0.Add(Filter.Relief);
+            List<FilterName> filtersConv0 = new List<FilterName>();
+            filtersConv0.Add(FilterName.Blur);
+            filtersConv0.Add(FilterName.Clarity);
+            filtersConv0.Add(FilterName.Relief);
 
             // Conv 1:
-            List<Filter> filtersConv1 = new List<Filter>();
-            filtersConv1.Add(Filter.Blur);
-            filtersConv1.Add(Filter.Clarity);
-            filtersConv1.Add(Filter.Relief);
+            List<FilterName> filtersConv1 = new List<FilterName>();
+            filtersConv1.Add(FilterName.Blur);
+            filtersConv1.Add(FilterName.Clarity);
+            filtersConv1.Add(FilterName.Relief);
 
             convFilters.Add(filtersConv0);
             convFilters.Add(filtersConv1);
