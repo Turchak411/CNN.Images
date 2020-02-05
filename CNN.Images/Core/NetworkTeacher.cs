@@ -2,9 +2,11 @@
 using CNN.Images.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CNN.Images.Core
 {
@@ -330,20 +332,21 @@ namespace CNN.Images.Core
                     };
                 }
 
-                List<Thread> threadList;
+                List<Task> tasks;
 
                 // Iteration multithreading train:
                 for (int j = 0; j < trainConfigs.Count; j++)
                 {
-                    threadList = new List<Thread>();
+                    tasks = new List<Task>();
 
                     for (int i = 0; i < netTeachers.Length; i++)
                     {
-                        threadList.Add(new Thread(netTeachers[i].Train));
-                        threadList[i].Start();
-                    }
+                        var teacherNumber = i;
+                        var task = Task.Run(() => { netTeachers[teacherNumber].Train(); });
+                        tasks.Add(task);
+                    };
 
-                    Wait(threadList);
+                    Task.WaitAll(tasks.ToArray());
 
                     if (j != trainConfigs.Count - 1)
                     {
@@ -405,21 +408,6 @@ namespace CNN.Images.Core
             Console.WriteLine("Train configuration object created!");
 
             return trainConfigs;
-        }
-
-        private void Wait(List<Thread> threadList)
-        {
-            while (true)
-            {
-                int WorkCount = 0;
-
-                for (int i = 0; i < threadList.Count; i++)
-                {
-                    WorkCount += (threadList[i].IsAlive) ? 0 : 1;
-                }
-
-                if (WorkCount == threadList.Count) break;
-            }
         }
 
         public double[] Handle(string imageFileName)
