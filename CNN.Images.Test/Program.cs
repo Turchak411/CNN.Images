@@ -10,10 +10,16 @@ namespace CNN.Images.Test
             // Network initialize:
             ServiceCNNImages evaNetwork = new ServiceCNNImages();
 
+            //NetworkStructure netStructure = new NetworkStructure
+            //{
+            //    InputVectorLength = 81,
+            //    NeuronsByLayers = new[] { 75, 75, 75, 50, 1 }
+            //};
+
             NetworkStructure netStructure = new NetworkStructure
             {
-                InputVectorLength = 81,
-                NeuronsByLayers = new[] { 75, 75, 75, 50, 1 }
+                InputVectorLength = 243,
+                NeuronsByLayers = new[] { 500, 500, 1 }
             };
 
             evaNetwork.CreateNetwork(netStructure, 2, "testDatasets.txt");
