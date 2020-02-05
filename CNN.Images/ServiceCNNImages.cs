@@ -17,9 +17,7 @@ namespace CNN.Images
         {
             _fileManager = new FileManager(networkStructure);
 
-            // TODO: Перенести схемы экстракт слоев в отдельный объект, а пока
-            string filtersFilename = "filters.txt";
-            Extractor extractor = new Extractor("cpcp", CreateConvFiltersScheme(), filtersFilename);
+            Extractor extractor = new Extractor("cpcp", CreateConvFiltersScheme());
 
             _networkTeacher = new NetworksTeacher(extractor, networkStructure, netsCountInAssembly, _fileManager);
 
@@ -30,7 +28,6 @@ namespace CNN.Images
             //}
         }
 
-        // TODO: Потом перенести куда-нибудь, но не сюда
         private static List<List<FilterName>> CreateConvFiltersScheme()
         {
             List<List<FilterName>> convFilters = new List<List<FilterName>>();

@@ -286,47 +286,15 @@ namespace CNN.Images.Core
         {
             Iteration = trainConfig.EndIteration;
 
-            // TODO: потом перенести этот регион в отдельный класс:
-            #region Extration
-
-            Console.WriteLine("Start extraction...");
-
-            List<double[]> inputDataSets = new List<double[]>();
-            List<double[]> outputDataSets = new List<double[]>();
-
-            // Загрузка файлов из папки
-            string[] outputClassesFolders = Directory.GetDirectories(trainConfig.SourceFolderName);
-
-            for(int i = 0; i < outputClassesFolders.Length; i++)
-            {
-                // Получение информации о файлах в текущей папке:
-                string[] fileInfo = Directory.GetFiles(outputClassesFolders[i]);
-
-                for(int k = 0; k < fileInfo.Length; k++)
-                {
-                    // Создание входного вектора:
-                    List<double[,]> imageMatrix = _imageLoader.LoadImageDataRGB(fileInfo[k]);
-                    inputDataSets.Add(_extractor.Extract(imageMatrix));
-
-                    // Создание выходного вектора:
-                    double[] outputVector = new double[outputClassesFolders.Length];
-                    outputVector[i] = 1;
-                    outputDataSets.Add(outputVector);
-                }
-            }
-
-            Console.WriteLine("Extraction completed!");
-            Console.WriteLine("Saving train sets data...");
-
-            _fileManager.SaveSets(inputDataSets, outputDataSets, trainConfig.InputDatasetFilename, trainConfig.OutputDatasetFilename);
-
-            Console.WriteLine("Save train sets completed!");
-
-            #endregion
+            // 1. Создание обучающих сетов из указанных папок:
+            _fileManager.CreateTrainSets(_extractor, _imageLoader, trainConfig);
 
             #region Load data from file
 
             Console.WriteLine("Load train sets...");
+
+            List<double[]> inputDataSets;
+            List<double[]> outputDataSets;
 
             try
             {

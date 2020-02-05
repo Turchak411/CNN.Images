@@ -11,7 +11,7 @@ namespace CNN.Images.Services
 
         private Extractor() { }
 
-        public Extractor(string layersScheme, List<List<FilterName>> convLayersFilters, string filtersFilename)
+        public Extractor(string layersScheme, List<List<FilterName>> convLayersFilters)
         {
             m_layers = new List<IExtractLayer>();
 
@@ -20,25 +20,15 @@ namespace CNN.Images.Services
                 switch (layersScheme[i])
                 {
                     case 'c':
-                        CreateConvLayer(convLayersFilters[currentFilterUse], filtersFilename);
+                        m_layers.Add(new ConvolutionLayer(convLayersFilters[currentFilterUse]));
                         currentFilterUse++;
                         break;
                     case 'p':
                     default:
-                        CreatePoolLayer(5, 5); // default: matrix 3x3 //
+                        m_layers.Add(new MaxPoolingLayer(5, 5)); // default: matrix 3x3 //
                         break;
                 }
             }
-        }
-
-        private void CreateConvLayer(List<FilterName> filtersToImport, string filtersFilename)
-        {
-            m_layers.Add(new ConvolutionLayer(filtersToImport, filtersFilename));
-        }
-
-        private void CreatePoolLayer(int handleMatrixDimY, int handleMatrixDimX)
-        {
-            m_layers.Add(new MaxPoolingLayer(handleMatrixDimY, handleMatrixDimX));
         }
 
         public double[] Extract(List<double[,]> rgbMatrix)
@@ -68,7 +58,6 @@ namespace CNN.Images.Services
                     }
                 }
             }
-
 
             return vector;
         }
