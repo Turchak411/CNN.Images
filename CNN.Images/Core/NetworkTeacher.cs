@@ -305,7 +305,7 @@ namespace CNN.Images.Core
                 for(int k = 0; k < fileInfo.Length; k++)
                 {
                     // Создание входного вектора:
-                    double[,] imageMatrix = _imageLoader.LoadImageData(fileInfo[k]);
+                    List<double[,]> imageMatrix = _imageLoader.LoadImageDataRGB(fileInfo[k]);
                     inputDataSets.Add(_extractor.Extract(imageMatrix));
 
                     // Создание выходного вектора:
@@ -456,8 +456,8 @@ namespace CNN.Images.Core
 
         public double[] Handle(string imageFileName)
         {
-            double[,] imgMatrix = _imageLoader.LoadImageData(imageFileName);
-            double[] data = _extractor.Extract(imgMatrix);
+            List<double[,]> imgMatrixList = _imageLoader.LoadImageDataRGB(imageFileName);
+            double[] data = _extractor.Extract(imgMatrixList);
 
             double[] result = new double[_netsList.Count];
 

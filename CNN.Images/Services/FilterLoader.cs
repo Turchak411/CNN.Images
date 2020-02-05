@@ -7,7 +7,7 @@ namespace CNN.Images.Services
 {
     public class FilterLoader
     {
-        // README: In this DB uses 5x5 filters
+        // README: In this DB uses 3x3 filters
         // TODO: Переработать данный класс
 
         private List<double[,]> _filtersList = new List<double[,]>();

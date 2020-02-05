@@ -81,9 +81,9 @@ namespace CNN.Images.Core.Layers
             // Свертка:
             convoluteMatrix = new double[matrixDimY - filter.GetLength(0) + 1, matrixDimX - filter.GetLength(1) + 1];
 
-            for (int i = 0; i < matrixDimY - filter.GetLength(0); i++)
+            for (int i = 0; i < matrixDimY - filter.GetLength(0); i+=2)
             {
-                for (int k = 0; k < matrixDimX - filter.GetLength(1); k++)
+                for (int k = 0; k < matrixDimX - filter.GetLength(1); k+=2)
                 {
                     convoluteMatrix[i, k] = ImposeFilterFrame(matrix, filter, i, k);
                 }
