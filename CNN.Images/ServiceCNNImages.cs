@@ -17,7 +17,7 @@ namespace CNN.Images
         {
             _fileManager = new FileManager(networkStructure);
 
-            Extractor extractor = new Extractor("cpcppp", CreateConvFiltersScheme());
+            Extractor extractor = new Extractor("cppp", CreateConvFiltersScheme());
 
             _networkTeacher = new NetworksTeacher(extractor, networkStructure, netsCountInAssembly, _fileManager);
 
@@ -45,7 +45,7 @@ namespace CNN.Images
             filtersConv1.Add(FilterName.Relief);
 
             convFilters.Add(filtersConv0);
-            convFilters.Add(filtersConv1);
+            //convFilters.Add(filtersConv1);
 
             return convFilters;
         }

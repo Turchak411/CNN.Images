@@ -1,5 +1,6 @@
 ﻿using CNN.Images.Model;
 using System;
+using System.IO;
 
 namespace CNN.Images.Test
 {
@@ -18,26 +19,28 @@ namespace CNN.Images.Test
 
             NetworkStructure netStructure = new NetworkStructure
             {
-                InputVectorLength = 243,
-                NeuronsByLayers = new[] { 500, 500, 1 }
+                InputVectorLength = 108,
+                NeuronsByLayers = new[] { 200, 200, 1 }
             };
 
-            evaNetwork.CreateNetwork(netStructure, 2, "testDatasets.txt");
+            evaNetwork.CreateNetwork(netStructure, 3, "testDatasets.txt");
 
             // Main training:
             TrainConfiguration trainConfig = new TrainConfiguration
             {
-                StartIteration = 0,
-                EndIteration = 10000,
+                StartIteration = 1000000,
+                EndIteration = 1000100,
                 InputDatasetFilename = "inputSets.txt",
                 OutputDatasetFilename = "outputSets.txt",
                 SourceFolderName = "images",
                 MemoryFolder = ""
             };
 
-            evaNetwork.Train(trainConfig, 10000);
+            evaNetwork.Train(trainConfig, 100);
 
-            double[] sssss = evaNetwork.Handle("testImages//img.png");
+            // TODO: Убрать потом
+            DirectoryInfo dirInfo = new DirectoryInfo("testImages");
+            double[] sssss = evaNetwork.Handle(dirInfo.GetFiles()[0].FullName);
 
             Console.ReadKey();
         }

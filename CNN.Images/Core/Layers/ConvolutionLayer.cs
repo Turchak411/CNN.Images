@@ -42,7 +42,7 @@ namespace CNN.Images.Core.Layers
             int matrixDimY = matrix.GetLength(0);
             int matrixDimX = matrix.GetLength(1);
 
-            if ((matrixDimY % filter.GetLength(0) != 0) || (matrixDimX % filter.GetLength(1) != 0))
+            if ((matrixDimY - filter.GetLength(0) < 0) || (matrixDimX - filter.GetLength(1) < 0))
             {
                 double[,] newMatrix = matrix;
                 // Калибровка по вертикали:
@@ -75,6 +75,9 @@ namespace CNN.Images.Core.Layers
 
                 matrix = newMatrix;
             }
+
+            matrixDimY = matrix.GetLength(0);
+            matrixDimX = matrix.GetLength(1);
 
             // Свертка:
             convoluteMatrix = new double[matrixDimY - filter.GetLength(0) + 1, matrixDimX - filter.GetLength(1) + 1];
