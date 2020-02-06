@@ -25,7 +25,7 @@ namespace CNN.Images.Services
                         break;
                     case 'p':
                     default:
-                        m_layers.Add(new MaxPoolingLayer(5, 5)); // default: matrix 3x3 //
+                        m_layers.Add(new MaxPoolingLayer(2, 2)); // default: matrix 3x3 //
                         break;
                 }
             }
@@ -33,6 +33,8 @@ namespace CNN.Images.Services
 
         public double[] Extract(List<double[,]> rgbMatrix)
         {
+            // TODO: После экстракции теряются различия в векторах, подредактировать
+
             // Обработка через все слои:
             List<double[,]> tempMatrixList = rgbMatrix;
 
@@ -54,6 +56,7 @@ namespace CNN.Images.Services
                 {
                     for (int j = 0; j < tempMatrixList[i].GetLength(1); j++, vectorIndex++)
                     {
+                        // TODO: Подумать над правильной нормализацией
                         vector[vectorIndex] = tempMatrixList[i][k, j];
                     }
                 }

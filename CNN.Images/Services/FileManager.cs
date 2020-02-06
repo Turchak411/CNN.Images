@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using WeightsGenerator;
+using System.Linq;
 
 namespace CNN.Images.Services
 {
@@ -223,6 +224,8 @@ namespace CNN.Images.Services
 
             Console.WriteLine("Creating completed!");
             Console.WriteLine("Saving train sets data...");
+
+            //bool isEqual = Enumerable.SequenceEqual(inputDataSets[0], inputDataSets[1]);
 
             SaveSets(inputDataSets, outputDataSets, trainConfig.InputDatasetFilename, trainConfig.OutputDatasetFilename);
 
