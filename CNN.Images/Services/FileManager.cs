@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using WeightsGenerator;
+using System.Linq;
 
 namespace CNN.Images.Services
 {
@@ -161,7 +162,7 @@ namespace CNN.Images.Services
             return sets;
         }
 
-        public void SaveSets(List<double[]> inputSets, List<double[]> outputSets,
+        private void SaveSets(List<double[]> inputSets, List<double[]> outputSets,
                                string inputSetsFilename, string outputSetsFilename)
         {
             // Saving input sets:
@@ -191,6 +192,44 @@ namespace CNN.Images.Services
                     fileWriter.WriteLine();
                 }
             }
+        }
+
+        public void CreateTrainSets(Extractor extractor, ImageLoader imageLoader, TrainConfiguration trainConfig)
+        {
+            Console.WriteLine("Start creating train sets...");
+
+            List<double[]> inputDataSets = new List<double[]>();
+            List<double[]> outputDataSets = new List<double[]>();
+
+            // Загрузка файлов из папки
+            string[] outputClassesFolders = Directory.GetDirectories(trainConfig.SourceFolderName);
+
+            for (int i = 0; i < outputClassesFolders.Length; i++)
+            {
+                // Получение информации о файлах в текущей папке:
+                string[] fileInfo = Directory.GetFiles(outputClassesFolders[i]);
+
+                for (int k = 0; k < fileInfo.Length; k++)
+                {
+                    // Создание входного вектора:
+                    List<double[,]> imageMatrix = imageLoader.LoadImageDataRGB(fileInfo[k]);
+                    inputDataSets.Add(extractor.Extract(imageMatrix));
+
+                    // Создание выходного вектора:
+                    double[] outputVector = new double[outputClassesFolders.Length];
+                    outputVector[i] = 1;
+                    outputDataSets.Add(outputVector);
+                }
+            }
+
+            Console.WriteLine("Creating completed!");
+            Console.WriteLine("Saving train sets data...");
+
+            //bool isEqual = Enumerable.SequenceEqual(inputDataSets[0], inputDataSets[1]);
+
+            SaveSets(inputDataSets, outputDataSets, trainConfig.InputDatasetFilename, trainConfig.OutputDatasetFilename);
+
+            Console.WriteLine("Save train sets completed!");
         }
     }
 }

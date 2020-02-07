@@ -78,7 +78,7 @@ namespace CNN.Images.Core.Layers
 
             for (int i = 0; i < pooledMatrixDimY; i++)
             {
-                for (int k = 0; k < pooledMatrixDimY; k++)
+                for (int k = 0; k < pooledMatrixDimX; k++)
                 {
                     pooledMatrix[i, k] = GetMaxValue(matrix, i * m_handleMatrixDimY, k * m_handleMatrixDimX);
                 }
@@ -104,6 +104,5 @@ namespace CNN.Images.Core.Layers
 
             return maxValue;
         }
-
     }
 }

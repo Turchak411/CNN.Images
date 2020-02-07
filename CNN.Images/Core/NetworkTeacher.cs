@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CNN.Images.Core
 {
@@ -37,7 +38,7 @@ namespace CNN.Images.Core
 
             _fileManager = fileManager;
             _extractor = extractor;
-            _imageLoader = new ImageLoader(100, 100);
+            _imageLoader = new ImageLoader(20, 20); // TODO: Тут настраивается размеры исходного обрабатываемого изображения
             _logger = new Logger();
 
             try
@@ -286,47 +287,15 @@ namespace CNN.Images.Core
         {
             Iteration = trainConfig.EndIteration;
 
-            // TODO: потом перенести этот регион в отдельный класс:
-            #region Extration
-
-            Console.WriteLine("Start extraction...");
-
-            List<double[]> inputDataSets = new List<double[]>();
-            List<double[]> outputDataSets = new List<double[]>();
-
-            // Загрузка файлов из папки
-            string[] outputClassesFolders = Directory.GetDirectories(trainConfig.SourceFolderName);
-
-            for(int i = 0; i < outputClassesFolders.Length; i++)
-            {
-                // Получение информации о файлах в текущей папке:
-                string[] fileInfo = Directory.GetFiles(outputClassesFolders[i]);
-
-                for(int k = 0; k < fileInfo.Length; k++)
-                {
-                    // Создание входного вектора:
-                    double[,] imageMatrix = _imageLoader.LoadImageData(fileInfo[k]);
-                    inputDataSets.Add(_extractor.Extract(imageMatrix));
-
-                    // Создание выходного вектора:
-                    double[] outputVector = new double[outputClassesFolders.Length];
-                    outputVector[i] = 1;
-                    outputDataSets.Add(outputVector);
-                }
-            }
-
-            Console.WriteLine("Extraction completed!");
-            Console.WriteLine("Saving train sets data...");
-
-            _fileManager.SaveSets(inputDataSets, outputDataSets, trainConfig.InputDatasetFilename, trainConfig.OutputDatasetFilename);
-
-            Console.WriteLine("Save train sets completed!");
-
-            #endregion
+            // 1. Создание обучающих сетов из указанных папок:
+            _fileManager.CreateTrainSets(_extractor, _imageLoader, trainConfig);
 
             #region Load data from file
 
             Console.WriteLine("Load train sets...");
+
+            List<double[]> inputDataSets;
+            List<double[]> outputDataSets;
 
             try
             {
@@ -362,20 +331,21 @@ namespace CNN.Images.Core
                     };
                 }
 
-                List<Thread> threadList;
+                List<Task> tasks;
 
                 // Iteration multithreading train:
                 for (int j = 0; j < trainConfigs.Count; j++)
                 {
-                    threadList = new List<Thread>();
+                    tasks = new List<Task>();
 
                     for (int i = 0; i < netTeachers.Length; i++)
                     {
-                        threadList.Add(new Thread(netTeachers[i].Train));
-                        threadList[i].Start();
-                    }
+                        var teacherNumber = i;
+                        var task = Task.Run(() => { netTeachers[teacherNumber].Train(); });
+                        tasks.Add(task);
+                    };
 
-                    Wait(threadList);
+                    Task.WaitAll(tasks.ToArray());
 
                     if (j != trainConfigs.Count - 1)
                     {
@@ -456,8 +426,8 @@ namespace CNN.Images.Core
 
         public double[] Handle(string imageFileName)
         {
-            double[,] imgMatrix = _imageLoader.LoadImageData(imageFileName);
-            double[] data = _extractor.Extract(imgMatrix);
+            List<double[,]> imgMatrixList = _imageLoader.LoadImageDataRGB(imageFileName);
+            double[] data = _extractor.Extract(imgMatrixList);
 
             double[] result = new double[_netsList.Count];
 

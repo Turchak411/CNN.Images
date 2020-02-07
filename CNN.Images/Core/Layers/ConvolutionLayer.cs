@@ -3,19 +3,19 @@ using CNN.Images.Model.Interfaces;
 using CNN.Images.Services;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CNN.Images.Core.Layers
 {
     public class ConvolutionLayer : IExtractLayer
     {
-        private FilterLoader m_filtersList;
+        private List<FilterConfig> _filtersList;
 
         private ConvolutionLayer() { }
 
-        public ConvolutionLayer(List<Filter> filtersToImport, string filtersFilename)
+        public ConvolutionLayer(List<FilterName> filtersToImport)
         {
-            m_filtersList = new FilterLoader(filtersToImport, filtersFilename);
+            FilterLoader filterLoader = new FilterLoader();
+            _filtersList = filterLoader.ImportFilters(filtersToImport);
         }
 
         public List<double[,]> Handle(List<double[,]> inputMatrix)
@@ -24,11 +24,9 @@ namespace CNN.Images.Core.Layers
 
             for (int i = 0; i < inputMatrix.Count; i++)
             {
-                for (int k = 0; k < m_filtersList.GetFiltersCount(); k++)
+                for (int k = 0; k < _filtersList.Count; k++)
                 {
-                    double[,] filter = m_filtersList.GetFilter(k);
-
-                    convMatrix.Add(ImposeFilter(inputMatrix[i], filter));
+                    convMatrix.Add(ImposeFilter(inputMatrix[i], _filtersList[k].Matrix));
                 }
             }
 
@@ -44,7 +42,7 @@ namespace CNN.Images.Core.Layers
             int matrixDimY = matrix.GetLength(0);
             int matrixDimX = matrix.GetLength(1);
 
-            if ((matrixDimY % filter.GetLength(0) != 0) || (matrixDimX % filter.GetLength(1) != 0))
+            if ((matrixDimY - filter.GetLength(0) < 0) || (matrixDimX - filter.GetLength(1) < 0))
             {
                 double[,] newMatrix = matrix;
                 // Калибровка по вертикали:
@@ -78,12 +76,15 @@ namespace CNN.Images.Core.Layers
                 matrix = newMatrix;
             }
 
+            matrixDimY = matrix.GetLength(0);
+            matrixDimX = matrix.GetLength(1);
+
             // Свертка:
             convoluteMatrix = new double[matrixDimY - filter.GetLength(0) + 1, matrixDimX - filter.GetLength(1) + 1];
 
-            for (int i = 0; i < matrixDimY - filter.GetLength(0); i++)
+            for (int i = 0; i < matrixDimY - filter.GetLength(0); i+=2)
             {
-                for (int k = 0; k < matrixDimX - filter.GetLength(1); k++)
+                for (int k = 0; k < matrixDimX - filter.GetLength(1); k+=2)
                 {
                     convoluteMatrix[i, k] = ImposeFilterFrame(matrix, filter, i, k);
                 }
@@ -100,7 +101,7 @@ namespace CNN.Images.Core.Layers
             {
                 for (int k = 0; k < filter.GetLength(1); k++)
                 {
-                    sumValue += matrix[relIndexY, relIndexX] * filter[i, k];
+                    sumValue += matrix[relIndexY + i, relIndexX + k] * filter[i, k];
                 }
             }
 

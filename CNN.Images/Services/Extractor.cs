@@ -1,9 +1,7 @@
 ﻿using CNN.Images.Core.Layers;
 using CNN.Images.Model;
 using CNN.Images.Model.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CNN.Images.Services
 {
@@ -13,7 +11,7 @@ namespace CNN.Images.Services
 
         private Extractor() { }
 
-        public Extractor(string layersScheme, List<List<Filter>> convLayersFilters, string filtersFilename)
+        public Extractor(string layersScheme, List<List<FilterName>> convLayersFilters)
         {
             m_layers = new List<IExtractLayer>();
 
@@ -22,26 +20,47 @@ namespace CNN.Images.Services
                 switch (layersScheme[i])
                 {
                     case 'c':
-                        CreateConvLayer(convLayersFilters[currentFilterUse], filtersFilename);
+                        m_layers.Add(new ConvolutionLayer(convLayersFilters[currentFilterUse]));
                         currentFilterUse++;
                         break;
                     case 'p':
                     default:
-                        CreatePoolLayer(5, 5);      // default: matrix 3x3 //
-                        // Для cpcp: при 3х3 выходной вектор получается с длиной - 225, с 2х2 - 1521, но он более вариативен
+                        m_layers.Add(new MaxPoolingLayer(2, 2)); // default: matrix 3x3 //
                         break;
                 }
             }
         }
 
-        private void CreateConvLayer(List<Filter> filtersToImport, string filtersFilename)
+        public double[] Extract(List<double[,]> rgbMatrix)
         {
-            m_layers.Add(new ConvolutionLayer(filtersToImport, filtersFilename));
-        }
+            // Обработка через все слои:
+            List<double[,]> tempMatrixList = rgbMatrix;
 
-        private void CreatePoolLayer(int handleMatrixDimY, int handleMatrixDimX)
-        {
-            m_layers.Add(new MaxPoolingLayer(handleMatrixDimY, handleMatrixDimX));
+            for (int i = 0; i < m_layers.Count; i++)
+            {
+                tempMatrixList = m_layers[i].Handle(tempMatrixList);
+            }
+
+            // Преобразование полученного списка мультиразмерной матрицы в одноразмерный вектор:
+            // Подсчет размера вектора и его создание:
+            // P.S. Поскольку размерности всех полученных матриц одинаковы, то размерность принимается равной размерности первой(нулевой) матрицы
+            int dimention = tempMatrixList[0].GetLength(0) * tempMatrixList[0].GetLength(1) * tempMatrixList.Count;
+            double[] vector = new double[dimention];
+
+            // Загрузка данных в вектор:
+            for (int i = 0, vectorIndex = 0; i < tempMatrixList.Count; i++)
+            {
+                for (int k = 0; k < tempMatrixList[i].GetLength(0); k++)
+                {
+                    for (int j = 0; j < tempMatrixList[i].GetLength(1); j++, vectorIndex++)
+                    {
+                        // TODO: Подумать над правильной нормализацией
+                        vector[vectorIndex] = tempMatrixList[i][k, j];
+                    }
+                }
+            }
+
+            return vector;
         }
 
         public double[] Extract(double[,] matrix)
@@ -56,7 +75,6 @@ namespace CNN.Images.Services
             }
 
             // Преобразование полученного списка мультиразмерной матрицы в одноразмерный вектор:
-
             // Подсчет размера вектора и его создание:
             // P.S. Поскольку размерности всех полученных матриц одинаковы, то размерность принимается равной размерности первой(нулевой) матрицы
             int dimention = tempMatrixList[0].GetLength(0) * tempMatrixList[0].GetLength(1) * tempMatrixList.Count;
@@ -69,18 +87,10 @@ namespace CNN.Images.Services
                 {
                     for (int j = 0; j < tempMatrixList[i].GetLength(1); j++, vectorIndex++)
                     {
-                        //if (tempMatrixList[i][k, j] < 0.000001)    // (ДЛЯ УДОБСТВА ОТЛАДКИ)
-                        //{
-                        //vector[vectorIndex] = 0;
-                        //}
-                        //else
-                        //{
                         vector[vectorIndex] = tempMatrixList[i][k, j];
-                        //}
                     }
                 }
             }
-
 
             return vector;
         }
