@@ -433,8 +433,6 @@ namespace CNN.Images.Core
 
             for (int i = 0; i < _netsList.Count; i++)
             {
-                // Костыль: для корректного теста сетям нужна по крайней мере одна итерация обучения:
-                _netsList[i].Teach(data, new double[1] { 1 }, 0.01); //0.000000000000001);
                 result[i] = _netsList[i].Handle(data)[0];
             }
 

@@ -36,7 +36,7 @@ namespace CNN.Images.Test
                 MemoryFolder = ""
             };
 
-            evaNetwork.Train(trainConfig, 100);
+            //evaNetwork.Train(trainConfig, 100);
 
             // TODO: Temp
             DirectoryInfo dirInfo = new DirectoryInfo("testImages");
