@@ -11,6 +11,7 @@ namespace CNN.Images
         private FileManager _fileManager;
         private NetworksTeacher _networkTeacher;
 
+        // TODO: Выделить структуру Extraction-зоны в отдельный объект
         public void CreateNetwork(NetworkStructure networkStructure,
                                   int netsCountInAssembly = 1,
                                   string testDatasetsPath = null)

@@ -26,6 +26,7 @@ namespace CNN.Images.Services
                     case 'p':
                     default:
                         // TODO: [WARP] Тут настраивается размер фильтра пулинг слоя
+                        // TODO: Выделить размеры рамки пуллинг слоя в передачу выше
                         m_layers.Add(new MaxPoolingLayer(2, 2));
                         break;
                 }
