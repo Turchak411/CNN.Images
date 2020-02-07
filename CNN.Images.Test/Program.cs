@@ -11,12 +11,6 @@ namespace CNN.Images.Test
             // Network initialize:
             ServiceCNNImages evaNetwork = new ServiceCNNImages();
 
-            //NetworkStructure netStructure = new NetworkStructure
-            //{
-            //    InputVectorLength = 81,
-            //    NeuronsByLayers = new[] { 75, 75, 75, 50, 1 }
-            //};
-
             NetworkStructure netStructure = new NetworkStructure
             {
                 InputVectorLength = 192,
@@ -28,15 +22,15 @@ namespace CNN.Images.Test
             // Main training:
             TrainConfiguration trainConfig = new TrainConfiguration
             {
-                StartIteration = 0,
-                EndIteration = 1000,
+                StartIteration = 10300,
+                EndIteration = 10000000,
                 InputDatasetFilename = "inputSets.txt",
                 OutputDatasetFilename = "outputSets.txt",
                 SourceFolderName = "images",
                 MemoryFolder = ""
             };
 
-            //evaNetwork.Train(trainConfig, 100);
+            //evaNetwork.Train(trainConfig, 9989700);
 
             // TODO: Temp
             DirectoryInfo dirInfo = new DirectoryInfo("testImages");

@@ -38,7 +38,8 @@ namespace CNN.Images.Core
 
             _fileManager = fileManager;
             _extractor = extractor;
-            _imageLoader = new ImageLoader(20, 20); // TODO: Тут настраивается размеры исходного обрабатываемого изображения
+            // TODO: [WARP] Тут настраивается размеры исходного обрабатываемого изображения
+            _imageLoader = new ImageLoader(50, 50); // 20,20);
             _logger = new Logger();
 
             try

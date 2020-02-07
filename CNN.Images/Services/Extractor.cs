@@ -25,7 +25,8 @@ namespace CNN.Images.Services
                         break;
                     case 'p':
                     default:
-                        m_layers.Add(new MaxPoolingLayer(2, 2)); // default: matrix 3x3 //
+                        // TODO: [WARP] Тут настраивается размер фильтра пулинг слоя
+                        m_layers.Add(new MaxPoolingLayer(2, 2));
                         break;
                 }
             }
