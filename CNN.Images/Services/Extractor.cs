@@ -33,8 +33,6 @@ namespace CNN.Images.Services
 
         public double[] Extract(List<double[,]> rgbMatrix)
         {
-            // TODO: После экстракции теряются различия в векторах, подредактировать
-
             // Обработка через все слои:
             List<double[,]> tempMatrixList = rgbMatrix;
 

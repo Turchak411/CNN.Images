@@ -101,7 +101,7 @@ namespace CNN.Images.Core.Layers
             {
                 for (int k = 0; k < filter.GetLength(1); k++)
                 {
-                    sumValue += matrix[relIndexY, relIndexX] * filter[i, k];
+                    sumValue += matrix[relIndexY + i, relIndexX + k] * filter[i, k];
                 }
             }
 

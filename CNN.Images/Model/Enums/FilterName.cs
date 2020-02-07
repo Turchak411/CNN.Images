@@ -1,5 +1,5 @@
 ﻿
 namespace CNN.Images.Model
 {
-    public enum FilterName { Relief, Blur, Clarity };
+    public enum FilterName { Relief, Blur, Clarity, SobelVertical, SobelHorizontal };
 }
