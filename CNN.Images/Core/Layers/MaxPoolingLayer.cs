@@ -104,41 +104,5 @@ namespace CNN.Images.Core.Layers
 
             return maxValue;
         }
-
-        // TODO: temp
-        private double GetMinValue(double[,] matrix, int sectionIndexY, int sectionIndexX)
-        {
-            double minValue = matrix[0, 0];
-
-            for (int i = sectionIndexY; i < sectionIndexY + m_handleMatrixDimY; i++)
-            {
-                for (int k = sectionIndexX; k < sectionIndexX + m_handleMatrixDimX; k++)
-                {
-                    if (matrix[i, k] < minValue)
-                    {
-                        minValue = matrix[i, k];
-                    }
-                }
-            }
-
-            return minValue;
-        }
-
-        // TODO: temp
-        private double GetAvgValue(double[,] matrix, int sectionIndexY, int sectionIndexX)
-        {
-            double minValue = matrix[0, 0];
-            double sum = 0;
-
-            for (int i = sectionIndexY; i < sectionIndexY + m_handleMatrixDimY; i++)
-            {
-                for (int k = sectionIndexX; k < sectionIndexX + m_handleMatrixDimX; k++)
-                {
-                    sum += matrix[i, k];
-                }
-            }
-
-            return sum / (matrix.GetLength(0) * matrix.GetLength(1));
-        }
     }
 }

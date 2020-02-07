@@ -47,6 +47,34 @@ namespace CNN.Images.Services
             };
         }
 
+        public FilterConfig GetSobelVerticalFilter()
+        {
+            return new FilterConfig
+            {
+                Name = FilterName.SobelVertical,
+                Matrix = new double[,]
+                {
+                    {  1,  2,  1 },
+                    {  0,  0,  0 },
+                    { -1, -2, -1 }
+                }
+            };
+        }
+
+        public FilterConfig GetSobelHorizontalFilter()
+        {
+            return new FilterConfig
+            {
+                Name = FilterName.SobelHorizontal,
+                Matrix = new double[,]
+                {
+                    { -1, 0, 1 },
+                    { -2, 0, 2 },
+                    { -1, 0, 1 }
+                }
+            };
+        }
+
         public List<FilterConfig> GetAllFilters()
         {
             List<FilterConfig> filters = new List<FilterConfig>();
@@ -54,6 +82,10 @@ namespace CNN.Images.Services
             filters.Add(GetReliefFilter());
             filters.Add(GetBlurFilter());
             filters.Add(GetClarityFilter());
+
+            // Edge detection filters:
+            filters.Add(GetSobelVerticalFilter());
+            filters.Add(GetSobelHorizontalFilter());
 
             return filters;
         }
