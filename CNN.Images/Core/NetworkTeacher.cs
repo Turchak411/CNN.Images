@@ -3,6 +3,7 @@ using CNN.Images.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -412,7 +413,48 @@ namespace CNN.Images.Core
             return trainConfigs;
         }
 
-        public double[] Handle(string imageFileName)
+        public void Handle(string imageFileName)
+        {
+            // TODO: Framing
+            // Получение подкартинок картинки:
+            Framer framer = new Framer();
+            List<Bitmap> allImageObjects = framer.GetBitmaps(imageFileName);
+
+            List<List<double[,]>> imagesMatrixList = new List<List<double[,]>>();
+
+            // Получение матриц подкартинок:
+            for (int i = 0; i < allImageObjects.Count; i++)
+            {
+                imagesMatrixList.Add(_imageLoader.LoadImageDataRGB(allImageObjects[i]));
+            }
+
+            // Перевод матриц подкартинок в векторы:
+            List<double[]> inputVectors = new List<double[]>();
+
+            for (int i = 0; i < imagesMatrixList.Count; i++)
+            {
+                inputVectors.Add(_extractor.Extract(imagesMatrixList[i]));
+            }
+
+            // Получение результатов:
+            List<double[]> results = new List<double[]>();
+
+            for (int i = 0; i < inputVectors.Count; i++)
+            {
+                double[] result = new double[_netsList.Count];
+
+                for (int k = 0; k < _netsList.Count; k++)
+                {
+                    result[k] = _netsList[k].Handle(inputVectors[i])[0];
+                }
+
+                results.Add(result);
+            }
+
+            _imageLoader.CreateOutputImage(results);
+        }
+
+        public double[] HandleSingleFrame(string imageFileName)
         {
             List<double[,]> imgMatrixList = _imageLoader.LoadImageDataRGB(imageFileName);
             double[] data = _extractor.Extract(imgMatrixList);

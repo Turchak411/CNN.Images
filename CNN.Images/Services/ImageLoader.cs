@@ -41,10 +41,41 @@ namespace CNN.Images.Services
             return ConvertToMatrix(img);
         }
 
+        public double[,] LoadImageDataBW(Bitmap imgBitmap)
+        {
+            // Загрузка и стандартизация изображения:
+            Bitmap img = imgBitmap;
+
+            // Приведение изображения к заданынм размерам:
+            img = Compress(img);
+
+            // Обесцвечивание изображения:
+            img = Discolor(img);
+
+            img.Save("test.png");
+
+            // Отцифровка изображения:
+            return ConvertToMatrix(img);
+        }
+
         public List<double[,]> LoadImageDataRGB(string imgPath)
         {
             // Загрузка и стандартизация изображения:
             Bitmap img = LoadImage(imgPath);
+
+            // Приведение изображения к заданынм размерам:
+            img = Compress(img);
+
+            img.Save("test.png");
+
+            // Отцифровка изображения:
+            return ConvertToMatrixList(img);
+        }
+
+        public List<double[,]> LoadImageDataRGB(Bitmap imgBitmap)
+        {
+            // Загрузка и стандартизация изображения:
+            Bitmap img = imgBitmap;
 
             // Приведение изображения к заданынм размерам:
             img = Compress(img);

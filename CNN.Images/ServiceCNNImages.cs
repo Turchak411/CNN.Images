@@ -70,9 +70,14 @@ namespace CNN.Images
             }
         }
 
-        public double[] Handle(string imageFilename)
+        public double[] HandleSingleFrame(string imageFilename)
         {
-            return _networkTeacher.Handle(imageFilename);
+            return _networkTeacher.HandleSingleFrame(imageFilename);
+        }
+
+        public void Handle(string imageFilename)
+        {
+            _networkTeacher.Handle(imageFilename);
         }
     }
 }
