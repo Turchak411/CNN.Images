@@ -11,13 +11,15 @@ namespace CNN.Images
         private FileManager _fileManager;
         private NetworksTeacher _networkTeacher;
 
+        // TODO: Выделить структуру Extraction-зоны в отдельный объект
         public void CreateNetwork(NetworkStructure networkStructure,
                                   int netsCountInAssembly = 1,
                                   string testDatasetsPath = null)
         {
             _fileManager = new FileManager(networkStructure);
 
-            Extractor extractor = new Extractor("cpcp", CreateConvFiltersScheme());
+            // TODO: [WARP] Тут настраивается схема слоев convolution и pooling
+            Extractor extractor = new Extractor("cpcppp", CreateConvFiltersScheme());
 
             _networkTeacher = new NetworksTeacher(extractor, networkStructure, netsCountInAssembly, _fileManager);
 
@@ -30,19 +32,18 @@ namespace CNN.Images
 
         private static List<List<FilterName>> CreateConvFiltersScheme()
         {
+            // TODO: [WARP] Тут настраивается список kernel'ов (фильтров) для каждого convolution слоя
             List<List<FilterName>> convFilters = new List<List<FilterName>>();
 
             // Conv 0:
             List<FilterName> filtersConv0 = new List<FilterName>();
-            filtersConv0.Add(FilterName.Blur);
-            filtersConv0.Add(FilterName.Clarity);
-            filtersConv0.Add(FilterName.Relief);
+            filtersConv0.Add(FilterName.SobelHorizontal);
+            filtersConv0.Add(FilterName.SobelVertical);
 
-            // Conv 1:
+            // Conv 0:
             List<FilterName> filtersConv1 = new List<FilterName>();
-            filtersConv1.Add(FilterName.Blur);
-            filtersConv1.Add(FilterName.Clarity);
-            filtersConv1.Add(FilterName.Relief);
+            filtersConv1.Add(FilterName.SobelHorizontal);
+            filtersConv1.Add(FilterName.SobelVertical);
 
             convFilters.Add(filtersConv0);
             convFilters.Add(filtersConv1);

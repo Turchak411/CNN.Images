@@ -42,7 +42,7 @@ namespace CNN.Images.Core.Layers
             int matrixDimY = matrix.GetLength(0);
             int matrixDimX = matrix.GetLength(1);
 
-            if ((matrixDimY % filter.GetLength(0) != 0) || (matrixDimX % filter.GetLength(1) != 0))
+            if ((matrixDimY - filter.GetLength(0) < 0) || (matrixDimX - filter.GetLength(1) < 0))
             {
                 double[,] newMatrix = matrix;
                 // Калибровка по вертикали:
@@ -76,9 +76,14 @@ namespace CNN.Images.Core.Layers
                 matrix = newMatrix;
             }
 
+            matrixDimY = matrix.GetLength(0);
+            matrixDimX = matrix.GetLength(1);
+
             // Свертка:
             convoluteMatrix = new double[matrixDimY - filter.GetLength(0) + 1, matrixDimX - filter.GetLength(1) + 1];
 
+            // TODO: [WARP] Тут настраивается stride (шаг обработки) convolution слоя
+            // TODO: Выделить stride в поле внутри этого класса
             for (int i = 0; i < matrixDimY - filter.GetLength(0); i+=2)
             {
                 for (int k = 0; k < matrixDimX - filter.GetLength(1); k+=2)
@@ -98,7 +103,7 @@ namespace CNN.Images.Core.Layers
             {
                 for (int k = 0; k < filter.GetLength(1); k++)
                 {
-                    sumValue += matrix[relIndexY, relIndexX] * filter[i, k];
+                    sumValue += matrix[relIndexY + i, relIndexX + k] * filter[i, k];
                 }
             }
 

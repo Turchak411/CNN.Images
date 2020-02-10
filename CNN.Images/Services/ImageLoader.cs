@@ -139,9 +139,9 @@ namespace CNN.Images.Services
                 for (int k = 0; k < m_imgDimentionX; k++)
                 {
                     Color absColorValue = img.GetPixel(k, i);
-                    imgDataRed[i, k] += (double)absColorValue.R;
-                    imgDataGreen[i, k] += (double)absColorValue.G;
-                    imgDataBlue[i, k] += (double)absColorValue.B;
+                    imgDataRed[i, k] += (255 - (double)absColorValue.R);// / 255;
+                    imgDataGreen[i, k] += (255 - (double)absColorValue.G);// / 255;
+                    imgDataBlue[i, k] += (255 - (double)absColorValue.B);// / 255;
                 }
             }
 
