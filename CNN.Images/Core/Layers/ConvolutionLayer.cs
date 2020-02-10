@@ -82,6 +82,8 @@ namespace CNN.Images.Core.Layers
             // Свертка:
             convoluteMatrix = new double[matrixDimY - filter.GetLength(0) + 1, matrixDimX - filter.GetLength(1) + 1];
 
+            // TODO: [WARP] Тут настраивается stride (шаг обработки) convolution слоя
+            // TODO: Выделить stride в поле внутри этого класса
             for (int i = 0; i < matrixDimY - filter.GetLength(0); i+=2)
             {
                 for (int k = 0; k < matrixDimX - filter.GetLength(1); k+=2)
