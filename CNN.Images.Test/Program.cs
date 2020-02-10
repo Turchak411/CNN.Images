@@ -22,15 +22,15 @@ namespace CNN.Images.Test
             // Main training:
             TrainConfiguration trainConfig = new TrainConfiguration
             {
-                StartIteration = 11000,
-                EndIteration = 26000000,
+                StartIteration = 26000000,
+                EndIteration = 29110000,
                 InputDatasetFilename = "inputSets.txt",
                 OutputDatasetFilename = "outputSets.txt",
                 SourceFolderName = "images",
                 MemoryFolder = ""
             };
 
-            evaNetwork.Train(trainConfig, 25989000);
+            evaNetwork.Train(trainConfig, 3110000);
 
             // TODO: Temp
             DirectoryInfo dirInfo = new DirectoryInfo("testImages");
