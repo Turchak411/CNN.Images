@@ -415,43 +415,91 @@ namespace CNN.Images.Core
 
         public void Handle(string imageFileName)
         {
-            // TODO: Framing
             // Получение подкартинок картинки:
             Framer framer = new Framer();
-            List<Bitmap> allImageObjects = framer.GetBitmaps(imageFileName);
-
-            List<List<double[,]>> imagesMatrixList = new List<List<double[,]>>();
+            List<FrameObject> allImageObjects = framer.GetFrameBitmapsAsObject(_imageLoader.LoadImage(imageFileName));
 
             // Получение матриц подкартинок:
+            List<List<double[,]>> imagesMatrixList = new List<List<double[,]>>();
+
             for (int i = 0; i < allImageObjects.Count; i++)
             {
-                imagesMatrixList.Add(_imageLoader.LoadImageDataRGB(allImageObjects[i]));
+                imagesMatrixList.Add(_imageLoader.LoadImageDataRGB(allImageObjects[i].BitmapImage));
             }
 
-            // Перевод матриц подкартинок в векторы:
-            List<double[]> inputVectors = new List<double[]>();
-
-            for (int i = 0; i < imagesMatrixList.Count; i++)
+            // Дополнение к полученным объектам выше данных матрицы их фрейма:
+            for(int i = 0; i < allImageObjects.Count; i++)
             {
-                inputVectors.Add(_extractor.Extract(imagesMatrixList[i]));
+                allImageObjects[i].MatrixListRGB = imagesMatrixList[i];
+            }
+
+            // Дополнение к полученным объектам выше данных векторов переведенных из матриц:
+            for (int i = 0; i < allImageObjects.Count; i++)
+            {
+                allImageObjects[i].VectorData = _extractor.Extract(imagesMatrixList[i]);
             }
 
             // Получение результатов:
             List<double[]> results = new List<double[]>();
 
-            for (int i = 0; i < inputVectors.Count; i++)
+            for (int i = 0; i < allImageObjects.Count; i++)
             {
                 double[] result = new double[_netsList.Count];
 
                 for (int k = 0; k < _netsList.Count; k++)
                 {
-                    result[k] = _netsList[k].Handle(inputVectors[i])[0];
+                    result[k] = _netsList[k].Handle(allImageObjects[i].VectorData)[0];
                 }
 
                 results.Add(result);
             }
 
-            _imageLoader.CreateOutputImage(results);
+            // Подсчет индексов максимальных из них и отбор только тех результатов, которые выше порога:
+            List<int> maxResultsIndexes = new List<int>();
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                int higherResultIndex = GetHigherResultIndex(results[i], 0.55);
+
+                // Если порог рассматриваемых по объекту результатов не пройден, то удаление этого объекта и результатов:
+                if (higherResultIndex == -1)
+                {
+                    allImageObjects.RemoveAt(i);
+                    results.RemoveAt(i);
+                    i--;
+                }
+                else
+                {
+                    maxResultsIndexes.Add(higherResultIndex);
+                }
+            }
+
+            // Создание картинки, на которой будут все найденные объекты, обозначенные рамками:
+            _imageLoader.CreateOutputImage(maxResultsIndexes, results, allImageObjects, imageFileName);
+        }
+
+        private int GetHigherResultIndex(double[] result, double threshold)
+        {
+            double maxValue = -1;
+            int maxValueIndex = -1;
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (result[i] > maxValue && result[i] > threshold)
+                {
+                    maxValue = result[i];
+                    maxValueIndex = i;
+                }
+            }
+
+            if (maxValueIndex == -1)
+            {
+                return -1;
+            }
+            else
+            {
+                return maxValueIndex;
+            }
         }
 
         public double[] HandleSingleFrame(string imageFileName)

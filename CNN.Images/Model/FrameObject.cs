@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 
 namespace CNN.Images.Model
 {
@@ -7,5 +8,9 @@ namespace CNN.Images.Model
         public Point Location { get; set; }
 
         public Bitmap BitmapImage { get; set; }
+
+        public List<double[,]> MatrixListRGB { get; set; }
+
+        public double[] VectorData { get; set; }
     }
 }

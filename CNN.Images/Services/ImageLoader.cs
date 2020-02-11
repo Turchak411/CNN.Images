@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using CNN.Images.Model;
 
 namespace CNN.Images.Services
 {
@@ -86,7 +87,7 @@ namespace CNN.Images.Services
             return ConvertToMatrixList(img);
         }
 
-        private Bitmap LoadImage(string path)
+        public Bitmap LoadImage(string path)
         {
             return new Bitmap(path);
         }
@@ -188,6 +189,28 @@ namespace CNN.Images.Services
             double maxValue = 16777216;
 
             return (absValue * -1) / maxValue;
+        }
+
+        public void CreateOutputImage(List<int> maxResultsIndexes, List<double[]> results, List<FrameObject> allImageObjects, string sourceImgPath)
+        {
+            Bitmap img = new Bitmap(sourceImgPath);
+            Graphics g = Graphics.FromImage(img);
+
+            for (int i = 0; i < allImageObjects.Count; i++)
+            {
+                // Отрисовка номера класса и степени активации записью выше:
+                string textToFrame = "Class: " + maxResultsIndexes[i] + " Value: " + results[i][maxResultsIndexes[i]];
+                g.DrawString(
+                             textToFrame,
+                             new Font("Tempus Sans ITC", 12f, FontStyle.Bold), 
+                             new SolidBrush(Color.Black),
+                             allImageObjects[i].Location.X,
+                             allImageObjects[i].Location.Y
+                    );
+
+                // Отрисовка рамки:
+                g.DrawImage(allImageObjects[i].BitmapImage, allImageObjects[i].Location.X, allImageObjects[i].Location.Y);
+            }
         }
     }
 }
