@@ -8,6 +8,7 @@ namespace CNN.Images.Model
         public Point Location { get; set; }
 
         public Bitmap BitmapImage { get; set; }
+        //public string SubimagePath { get; set; }
 
         public List<double[,]> MatrixListRGB { get; set; }
 

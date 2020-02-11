@@ -14,6 +14,16 @@ namespace CNN.Images.Services
 
             for (int i = 0; i < frameConfigs.Count; i++)
             {
+                //Bitmap imgPart = sourceImg.Clone(
+                //    new Rectangle(frameConfigs[i].StartPoint,
+                //                  new Size(frameConfigs[i].WidthPercent * sourceImg.Width / 100,
+                //                      frameConfigs[i].HeightPercent * sourceImg.Height / 100)
+                //                  ),
+                //    sourceImg.PixelFormat
+                //    );
+
+                //imgPart.Save("img " + i + ".png");
+
                 frameObjectList.Add(
                     new FrameObject
                     {
@@ -29,7 +39,6 @@ namespace CNN.Images.Services
             }
 
             return frameObjectList;
-            // TODO: Нехватка памяти, глянуть
         }
 
         private List<FrameConfig> GetAllPossibleFrameConfigs(int sourceWidth, int sourceHeight)
@@ -46,27 +55,32 @@ namespace CNN.Images.Services
 
                 while(tempHeight < 100 && tempWidth < 100)
                 {
-                    int maxPossibleY = sourceHeight - tempHeight;
-                    int maxPossibleX = sourceWidth - tempWidth;
+                    int maxPossibleY = sourceHeight * (100 - tempHeight) / 100;
+                    int maxPossibleX = sourceWidth * (100 - tempWidth) / 100;
 
                     int tempLocX = 0;
                     int tempLocY = 0;
 
-                    while (tempLocX < maxPossibleX || tempLocY < maxPossibleY)
+                    while (tempLocY < maxPossibleY)
                     {
-                        frameConfigs.Add(new FrameConfig
+                        while (tempLocX < maxPossibleX)
                         {
-                            StartPoint = new Point(tempLocX, tempLocY),
-                            HeightPercent = tempHeight,
-                            WidthPercent = tempWidth
-                        });
+                            frameConfigs.Add(new FrameConfig
+                            {
+                                StartPoint = new Point(tempLocX, tempLocY),
+                                HeightPercent = tempHeight,
+                                WidthPercent = tempWidth
+                            });
 
-                        tempLocX++;
-                        tempLocY++;
+                            tempLocX += 20;
+                        }
+
+                        tempLocY += 20;
+                        tempLocX = 0;
                     }
 
-                    tempWidth+=2;
-                    tempHeight+=2;
+                    tempWidth+=10;
+                    tempHeight+=10;
                 }
             }
 

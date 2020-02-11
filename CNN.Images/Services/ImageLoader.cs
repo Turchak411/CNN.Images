@@ -97,6 +97,13 @@ namespace CNN.Images.Services
             return new Bitmap(img, new Size(m_imgDimentionY, m_imgDimentionX));
         }
 
+        public Bitmap LoadImageWithCompress(string path)
+        {
+            // [WARP]: Тут настраиваются размеры изображения, которое позже будет фреймится
+            Bitmap img = new Bitmap(path);
+            return new Bitmap(img, new Size((int)(img.Size.Width * 0.6), (int)(img.Size.Height * 0.6)));
+        }
+
         private Bitmap Discolor(Bitmap img)
         {
             // Задаём формат Пикселя.

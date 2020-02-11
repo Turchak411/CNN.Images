@@ -417,26 +417,18 @@ namespace CNN.Images.Core
         {
             // Получение подкартинок картинки:
             Framer framer = new Framer();
-            List<FrameObject> allImageObjects = framer.GetFrameBitmapsAsObject(_imageLoader.LoadImage(imageFileName));
+            List<FrameObject> allImageObjects = framer.GetFrameBitmapsAsObject(_imageLoader.LoadImageWithCompress(imageFileName));
 
             // Получение матриц подкартинок:
-            List<List<double[,]>> imagesMatrixList = new List<List<double[,]>>();
-
             for (int i = 0; i < allImageObjects.Count; i++)
             {
-                imagesMatrixList.Add(_imageLoader.LoadImageDataRGB(allImageObjects[i].BitmapImage));
-            }
-
-            // Дополнение к полученным объектам выше данных матрицы их фрейма:
-            for(int i = 0; i < allImageObjects.Count; i++)
-            {
-                allImageObjects[i].MatrixListRGB = imagesMatrixList[i];
+                allImageObjects[i].MatrixListRGB = _imageLoader.LoadImageDataRGB(allImageObjects[i].BitmapImage);
             }
 
             // Дополнение к полученным объектам выше данных векторов переведенных из матриц:
             for (int i = 0; i < allImageObjects.Count; i++)
             {
-                allImageObjects[i].VectorData = _extractor.Extract(imagesMatrixList[i]);
+                allImageObjects[i].VectorData = _extractor.Extract(allImageObjects[i].MatrixListRGB);
             }
 
             // Получение результатов:
@@ -459,7 +451,7 @@ namespace CNN.Images.Core
 
             for (int i = 0; i < results.Count; i++)
             {
-                int higherResultIndex = GetHigherResultIndex(results[i], 0.55);
+                int higherResultIndex = GetHigherResultIndex(results[i], 0.97);
 
                 // Если порог рассматриваемых по объекту результатов не пройден, то удаление этого объекта и результатов:
                 if (higherResultIndex == -1)
