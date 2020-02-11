@@ -451,7 +451,7 @@ namespace CNN.Images.Core
 
             for (int i = 0; i < results.Count; i++)
             {
-                int higherResultIndex = GetHigherResultIndex(results[i], 0.97);
+                int higherResultIndex = GetHigherResultIndex(results[i], 0.8);
 
                 // Если порог рассматриваемых по объекту результатов не пройден, то удаление этого объекта и результатов:
                 if (higherResultIndex == -1)

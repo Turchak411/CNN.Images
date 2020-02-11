@@ -57,7 +57,7 @@ namespace CNN.Images.Services
                     for (int j = 0; j < tempMatrixList[i].GetLength(1); j++, vectorIndex++)
                     {
                         // TODO: Подумать над правильной нормализацией
-                        vector[vectorIndex] = tempMatrixList[i][k, j];
+                        vector[vectorIndex] = tempMatrixList[i][k, j] / 100;
                     }
                 }
             }
@@ -89,7 +89,7 @@ namespace CNN.Images.Services
                 {
                     for (int j = 0; j < tempMatrixList[i].GetLength(1); j++, vectorIndex++)
                     {
-                        vector[vectorIndex] = tempMatrixList[i][k, j];
+                        vector[vectorIndex] = tempMatrixList[i][k, j] / 100;
                     }
                 }
             }

@@ -72,10 +72,10 @@ namespace CNN.Images.Services
                                 WidthPercent = tempWidth
                             });
 
-                            tempLocX += 20;
+                            tempLocX += 10;
                         }
 
-                        tempLocY += 20;
+                        tempLocY += 10;
                         tempLocX = 0;
                     }
 
